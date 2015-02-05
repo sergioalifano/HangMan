@@ -10,16 +10,21 @@ namespace HangMan
     {
         static void Main(string[] args)
         {
-            //pick a random word
-            string wordToGuess = RandomWord();
-            DisplayWelcome();
-
-
             string letterGuessed = "";
             string userLetter = string.Empty;
-            bool playing=true;
+            bool playing = true;
             int lives = 5;
             string input = string.Empty;
+
+            //list of words
+            List<string> listOfWords = new List<string> { "HORSE", "RAINBOW", "BUTTERFLY" };
+
+            //pick a random word from the list of words
+            string wordToGuess = RandomWord(listOfWords);
+
+            List<string> colors = new List<string> { "Yellow", "Green", "Red", "Blue", "Gray", "DarkGray" };
+            //set the default color of foreground to white
+            ConsoleColor colorChanged = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), "White");
             
 
             while (playing)
@@ -30,15 +35,19 @@ namespace HangMan
                 //print out the guessed letters
                 Console.WriteLine("Letters guessed: " + CheckForTheLetter(letterGuessed, wordToGuess));
 
-                
-                Console.WriteLine("Lives left: {0}", lives);
+                //display lives left with a different color every time
+                Console.ForegroundColor = colorChanged;
+                Console.WriteLine("Guesses left: {0}", lives);
+                Console.ResetColor();
 
+                //ask to anter a letter
                 Console.Write("Enter a letter: ");
                 input= Console.ReadLine();
 
                 //add the input to all the letters guessed so far
                 letterGuessed += input;
 
+                //check if the user has guessed all the letters
                 if (Winner(letterGuessed, wordToGuess))
                 {
                     Console.Clear();
@@ -58,6 +67,7 @@ namespace HangMan
                 else
                 {
                     lives--;
+                    colorChanged = ChangeColor(colors);
                     //check the number of lives
                     if (lives == 0)
                     {
@@ -85,12 +95,11 @@ namespace HangMan
         /// This function pick a random word from a list
         /// </summary>
         /// <returns>a string</returns>
-        public static string RandomWord()
+        public static string RandomWord(List<string> listOfWords)
         {
-            //list of words
-            List<string> listOfWords = new List<string> { "HORSE", "RAINBOW", "BUTTERFLY" };
+            
             Random ngr = new Random();
-
+           
             //choose a random word from the list and return the string
             return listOfWords[ngr.Next(0, listOfWords.Count)];
         }
@@ -149,6 +158,18 @@ namespace HangMan
            
 
             return true;
+        }
+
+        static ConsoleColor ChangeColor(List<string> colors)
+        {
+            Random gnr = new Random();
+
+            //pick a color from the list of colors
+            string color=colors[gnr.Next(0, colors.Count())];
+
+            //return the color as ConsoleColor type
+            return (ConsoleColor)Enum.Parse(typeof(ConsoleColor), color);
+          
         }
     }
 }
